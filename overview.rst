@@ -15,9 +15,11 @@ Mumble基于标准的服务端-客户端（CS)的通讯模型。它利用了两�
    :alt: Mumble system overview
    :align: center
 
-   Mumble system overview
+   Mumble system overview   Mumble 系统概要图
 
 Both are protected by strong cryptography, this encryption is mandatory and cannot be disabled. The TCP control channel uses TLSv1 AES256-SHA [#f1]_ while the voice channel is encrypted with OCB-AES128 [#f2]_.
+
+两种方式都通过加密保护，加密是强制的且不能被停用。 TCP控制数据通道使用 TLSv1 AES256-SHA [#f1]_ 加密，而音频数据通道使用OCB-AES128 [#f2]_ 加密。
 
 .. figure:: resources/mumble_crypt_types.png
    :alt: Mumble crypt types
@@ -26,6 +28,8 @@ Both are protected by strong cryptography, this encryption is mandatory and cann
    Mumble crypto types
 
 While the TCP connection is mandatory the UDP connection can be compensated by tunnelling the UDP packets through the TCP connection as described in the protocol description later.
+
+虽然TCP连接是强制必须有的，但是正如后面的协议描述的那样， UDP数据包可以通过TCP连接隧道来传输，UPD连接以此得到TCP连接来的补偿，
 
 .. rubric:: Footnotes
 
