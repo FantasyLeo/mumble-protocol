@@ -60,7 +60,7 @@ so that major number takes two bytes and minor and patch numbers take one byte e
 The structure is shown in figure \ref{fig:versionEncoding}. The release, os and os\_version
 fields are common strings containing additional information.
 
-Version（版本）域 又 主版本、副版本和分支版本号组成（例如：1.2.0），所以主版本号占用了两个字节，
+Version（版本）字段由主版本、副版本和分支版本号组成（例如：1.2.0），所以主版本号占用了两个字节，
 副版本号和分支版本号各占用一字节。
 
 .. table:: Version field encoding (uint32)
@@ -138,7 +138,8 @@ The third field contains a list of zero or more token strings which act as passw
 that may give the client access to certain ACL groups without actually being a
 registered member in them, again see the server documentation for more information.
 
-第三个字段包含了
+第三个字段包含了一个为零的链表或者多个充当密码作用的凭证字符串，那可能会给客户端一个
+进入某一个ACL组，而该客户端并没有注册。详情请参考服务器文档。
 
 Crypto setup 加密设置
 ---------------------
@@ -148,7 +149,11 @@ the client. It contains the necessary cryptographic information for the OCB-AES1
 encryption used in the UDP Voice channel. The packet is described in figure
 below. The encryption itself is described in a later section.
 
-.. table:: CryptSetup message
+一旦完成版本数据包的交换，服务器将会发送给客户端一个加密设置（CyrptSetup）数据包。
+它包含了必要的加密算法信息，对于UDP语音通道使用的 OCB-ASE128加密。该数据包的描述如下表。
+加密的描述在后面的章节中。
+
+.. table:: CryptSetup message （加密设置信息）
 
    +-----------------------------------------------+
    | CryptSetup                                    |
@@ -160,8 +165,8 @@ below. The encryption itself is described in a later section.
    | server_nonce              | bytes             |
    +---------------------------+-------------------+
 
-Channel states
---------------
+Channel states 频道状态
+-----------------------
 
 After the client has successfully authenticated the server starts listing the channels
 by transmitting partial ChannelState message for every channel on this server. These
@@ -169,6 +174,11 @@ messages lack the channel link information as the client does not yet have full
 picture of all the channels. Once the initial ChannelState has been transmitted
 for all channels the server updates the linked channels by sending new packets for
 these. The full structure of these ChanneLState messages is shown below:
+
+在客户端通过服务器的认证后（具体是谁通过是的认证啊，晕了），服务器开始传输部分信息为所有在服务器上的频道（翻译不对）。
+这些信息中缺少频道链信息，以至于客户端的还不能完全绘制出所有的频道。一旦初始的频道状态
+（channelState）被传输到所有的频道，服务器将为此通过发送新的包来更新链频道。完整的
+频道状态信息的结构如下：
 
 .. table:: ChannelState message
 
@@ -197,8 +207,10 @@ these. The full structure of these ChanneLState messages is shown below:
 
 *The server must send a ChannelState for the root channel identified with ID 0.*
 
-User states
------------
+服务器必须发送一个ID为0的Root频道说明。
+
+User states  用户状态
+---------------------
 
 After the channels have been synchronized the server continues by listing the
 connected users. This is done by sending a UserState message for each user
