@@ -1,11 +1,15 @@
-Overview
-========
+Overview 概览
+=============
 
 Mumble is based on a standard server-client communication model. It
 utilizes two channels of communication, the first one is a TCP connection
 which is used to reliably transfer control data between the client and the
 server. The second one is a UDP connection which is used for unreliable,
 low latency transfer of voice data.
+
+Mumble基于标准的服务端-客户端（CS)的通讯模型。它利用了两种通信通道：一种是
+用于在服务端与客户端传输可靠的控制数据的TCP连接；另一种是用户传输语音数据的
+不可靠的、低延时的UPD连接。
 
 .. figure:: resources/mumble_system_overview.png
    :alt: Mumble system overview
