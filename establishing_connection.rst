@@ -1,5 +1,5 @@
-Establishing a connection
-=========================
+Establishing a connection 建立连接
+==================================
 
 This section describes the communication between the server and the client
 during connection establishing, note that only the TCP connection needs
@@ -7,8 +7,12 @@ to be established for the client to be connected. After this the client
 will be visible to the other clients on the server and able to send other
 types of messages.
 
-Connect
--------
+本章描述了服务端与客户端之间建立连接的通讯过程。注意对于客户端只有TCP连接
+需要建立。这之后，客户端可通过服务端连通其他客户端且能够发送其他各种消息
+类型。（咋翻译啊）
+
+Connect 内容
+------------
 
 As the basis for the synchronization procedure the client has to first
 establish the TCP connection to the server and do a common TLSv1 handshake.
@@ -18,17 +22,21 @@ This however is not mandatory as you can connect to the server without
 providing a certificate. However the server must provide the client with
 its certificate and it is recommended that the client checks this.
 
+
+
 .. figure:: resources/mumble_connection_setup.png
    :alt: Mumble connection setup
    :align: center
 
-   Mumble connection setup
+   Mumble connection setup  连接过程
 
-Version exchange
-----------------
+Version exchange 版本交换
+-------------------------
 
 Once the TLS handshake is completed both sides should transmit their version
 information using the Version message. The message structure is described below.
+
+一旦TLS握手完成，两边都会使用版本消息包发送他们自己的版本信息。消息结构体描述如下：
 
 .. table:: Version message
 
@@ -48,6 +56,9 @@ The version field is a combination of major, minor and patch version numbers (e.
 so that major number takes two bytes and minor and patch numbers take one byte each.
 The structure is shown in figure \ref{fig:versionEncoding}. The release, os and os\_version
 fields are common strings containing additional information.
+
+Version（版本）域 又 主版本、副版本和分支版本号组成（例如：1.2.0），所以主版本号占用了两个字节，
+副版本号和分支版本号各占用一字节。
 
 .. table:: Version field encoding (uint32)
 
