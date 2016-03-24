@@ -31,7 +31,7 @@ While the TCP connection is mandatory the UDP connection can be compensated by t
 
 虽然TCP连接是强制必须有的，但是正如后面的协议描述的那样， UDP数据包可以通过TCP连接隧道来传输，UPD连接以此得到TCP连接来的补偿，
 
-.. rubric:: Footnotes
+.. rubric:: Footnotes 脚注
 
 .. [#f1] http://en.wikipedia.org/wiki/Transport_Layer_Security
 .. [#f2] http://www.cs.ucdavis.edu/~rogaway/ocb/ocb-back.htm
