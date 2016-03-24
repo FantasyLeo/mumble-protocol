@@ -22,7 +22,10 @@ This however is not mandatory as you can connect to the server without
 providing a certificate. However the server must provide the client with
 its certificate and it is recommended that the client checks this.
 
-
+对于同步工序，客户端必须先与服务器建立TCP连接，且完成TLSv1握手。为了能够
+使用完整的设置Mumble协议的特性，推荐客户端为服务器提供一个完整的证书。
+当然这并不是强制的，你一样可以不提供给服务器任何证书。然而服务器必须提供给
+客户端一个它的证书，且推荐客户端验证该证书。
 
 .. figure:: resources/mumble_connection_setup.png
    :alt: Mumble connection setup
@@ -73,7 +76,10 @@ refer to the standard client versions. The major changes between these versions 
 in table below. The *release*, *os* and *os_version* information is not interpreted in
 any way at the moment.
 
-.. table:: Mumble version differences
+版本信息可能被用作 *SuggestConfig* 检查的一部分，这通常要参考标准的客户端版本。主要被变更
+在下表中所列举的。在目前 *release*, *os* and *os_version* 信息没有任何解释。
+
+.. table:: Mumble version differences （mumble版本间的不同）
 
    +---------------+-------------------------------------------+
    | Version       | Major changes                             |
@@ -87,15 +93,18 @@ any way at the moment.
    | 1.2.4         | Opus codec support, SuggestConfig message |
    +---------------+-------------------------------------------+
 
-Authenticate
-------------
+Authenticate 认证
+-----------------
 
 Once the client has sent the version it should follow this with the Authenticate message.
 The message structure is described in the figure below. This message may be sent immediately
 after sending the version message. The client does not need to wait for the server version
 message.
 
-.. table:: Authenticate message
+一旦客户端已经发送了版本信息，接下来它将会发送认证信息。认证信息的结构如下图表所描述。在发送
+版本消息之后，认证消息会被立即发送。客户端不需要等待服务器回复的版本信息。
+
+.. table:: Authenticate message （认证信息)
 
    +-----------------------------------------------+
    | Authenticate                                  |
@@ -104,7 +113,7 @@ message.
    +---------------------------+-------------------+
    | password                  | string            |
    +---------------------------+-------------------+
-   | tokens                    | string            |
+   | tokens (令牌、凭证）      | string            |
    +---------------------------+-------------------+
 
 The username and password are UTF-8 encoded strings. While the client is free to accept any
@@ -113,16 +122,26 @@ if the client certificate has been registered with the server the client is prim
 known with the username they had when the certificate was registered. For more
 information see the server documentation.
 
+用户名（username）和密码（password)是UTF-8编码字符串。While the client is free
+to accept any username from the user the server is allowed to impose further restrictions.
+此外，如果客户端的证书已经在该服务器注册了，则该客户端在基本是要知道他们在注册该证书时的
+用户名。更多信息参考服务器文档。
+
 The password must only be provided if the server is passworded, the client provided no
 certificate but wants to authenticate to an account which has a password set, or to
 access the SuperUser account.
+
+密码必须被提供，在服务器被设置密码，客户但没有证书且想认证一个有密码的帐号，或者进入超级用户（SuperUser）
+账号 时。
 
 The third field contains a list of zero or more token strings which act as passwords
 that may give the client access to certain ACL groups without actually being a
 registered member in them, again see the server documentation for more information.
 
-Crypto setup
-------------
+第三个字段包含了
+
+Crypto setup 加密设置
+---------------------
 
 Once the Version packets are exchanged the server will send a CryptSetup packet to
 the client. It contains the necessary cryptographic information for the OCB-AES128
