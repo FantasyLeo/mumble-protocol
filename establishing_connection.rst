@@ -175,7 +175,7 @@ picture of all the channels. Once the initial ChannelState has been transmitted
 for all channels the server updates the linked channels by sending new packets for
 these. The full structure of these ChanneLState messages is shown below:
 
-在客户端通过服务器的认证后（具体是谁通过是的认证啊，晕了），服务器开始传输部分信息为所有在服务器上的频道（翻译不对）。
+在客户端通过服务器的认证后（具体是谁通过是的认证啊，晕了），服务器开始传输频道清单信息（翻译不对）。
 这些信息中缺少频道链信息，以至于客户端的还不能完全绘制出所有的频道。一旦初始的频道状态
 （channelState）被传输到所有的频道，服务器将为此通过发送新的包来更新链频道。完整的
 频道状态信息的结构如下：
@@ -216,7 +216,10 @@ After the channels have been synchronized the server continues by listing the
 connected users. This is done by sending a UserState message for each user
 currently on the server, including the user that is currently connecting.
 
-.. table:: UserState message
+频道信息同步结束后，服务器会继续发送服务器上的用户清单。对于已经连到服务器
+或当前正在连接服务器用户，这是通过UserState信息完成的。
+
+.. table:: UserState message （用户状态 信息）
 
    +-----------------------------------------------+
    | UserState                                     |
@@ -260,8 +263,8 @@ currently on the server, including the user that is currently connecting.
    | recording                 | bool              |
    +---------------------------+-------------------+
 
-Server sync
------------
+Server sync  服务器同步
+-----------------------
 
 The client has now received a copy of the parts of the server state he
 needs to know about. To complete the synchronization the server transmits
@@ -269,15 +272,25 @@ a ServerSync message containing the session id of the clients session,
 the maximum bandwidth allowed on this server, the servers welcome text
 as well as the permissions the client has in the channel he ended up.
 
-For more information pease refer to the Mumble.proto file [#f1]_.
+客户端现在已经接收了一份它需要知道的服务器状态信息的部分副本。为完成同步
+工作，服务器需要发送服务器同步信息（ServerSync）。它包含了所有客户端的
+会话ID（session id)、服务器允许的最大带宽、服务器欢迎信息以及客户端在当前
+频道所有具有的权限信息。
 
-Ping
-----
+For more information please refer to the Mumble.proto file [#f1]_.
+
+更多信息请参考Mumble.porto文件[#f1]_。
+
+Ping 砰命令
+-----------
 
 If the client wishes to maintain the connection to the server it is required
 to ping the server. If the server does not receive a ping for 30 seconds it
 will disconnect the client.
 
-..      rubric:: Footnotes
+客户端如果想维持与服务器的连接，向服务器发送Ping信息包是必需的。如果服务器在30秒内
+没有收到客户端的ping信息包，它将断开与该客户端的连接。
+
+..      rubric:: Footnotes 脚注
 
 .. [#f1] https://raw.github.com/mumble-voip/mumble/master/src/Mumble.proto
