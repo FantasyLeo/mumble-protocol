@@ -154,7 +154,7 @@ Data
   时间戳。这个数据包将会被回显给最初的发送者，所以时间戳格式可以由发送者决定。
   唯一的限制是：它必须是64位的可变整形编码。
 
-Encoded audio data packet 编码音频数据包
+Encoded audio data packet 编码的音频数据包
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Encoded audio packets contain the actual user audio data for the voice
@@ -164,13 +164,21 @@ sequence number of the packet. Outgoing audio data packets contain only the
 header byte and the sequence number of the packet. The server matches these to
 the correct session using the transport layer information.
 
+编码的音频数据包包含了用于语音交流的真实的用户音频数据。接收的音频数据包 包含了
+公共的头部字节————源用户的可变编码的会话ID和数据包的可变编码的序列号。服务器
+使用传输层信息来正确的匹配这些会话。
+
 The remainder of the packet is made up of multiple encoded audio segments and
 optional positional audio information. The audio segment format depends on the
 codec of the whole audio packets. The audio segments contain codec
 implementation specific information on where the audio segments end so the
 possible positional audio data can be read from the end.
 
-.. _Incoming encoded audio packet:
+剩下的包由混合编码的音频分段和可选的音频位置信息组成。音频分段格式有整个音频包的编码
+决定。The audio segments contain codec implementation specific information on where the audio segments end so the
+possible positional audio data can be read from the end.
+
+.. _Incoming encoded audio packet（刚接收的编码的音频包）:
 .. table:: Incoming encoded audio packet
 
    +--------------------+--------------+-----------------------------------------------------------+
@@ -178,17 +186,17 @@ possible positional audio data can be read from the end.
    +====================+==============+===========================================================+
    | Header             | ``byte``     | Codec type/Audio target                                   |
    +--------------------+--------------+-----------------------------------------------------------+
-   | Session ID         | ``varint``   | Session ID of the source user.                            |
+   | Session ID         | ``varint``   | Session ID of the source user.  源用户会话ID              |
    +--------------------+--------------+-----------------------------------------------------------+
    | Sequence Number    | ``varint``   | Sequence number of the first audio data **segment**.      |
    +--------------------+--------------+-----------------------------------------------------------+
-   | Payload            | ``byte[]``   | Audio payload                                             |
+   | Payload            | ``byte[]``   | Audio payload          音频净负荷                         |
    +--------------------+--------------+-----------------------------------------------------------+
-   | Position Info      | ``float[3]`` | Positional audio information                              |
+   | Position Info      | ``float[3]`` | Positional audio information    音频位置信息              |
    +--------------------+--------------+-----------------------------------------------------------+
 
 
-.. _Outgoing encoded audio packet:
+.. _Outgoing encoded audio packet（编码的音频包）:
 .. table:: Outgoing encoded audio packet
 
    +--------------------+--------------+-----------------------------------------------------------+
@@ -205,14 +213,23 @@ possible positional audio data can be read from the end.
 
 Header
   The common audio packet header
+  
+头部
+  通用的音频包头部
 
 Session ID
   Session ID of the user to whom the audio packet belongs.
+  
+会话ID
+  音频数据包所属于某个用户的会话ID。
 
 Sequence Number
   Audio data sequence number. The sequence number is used to maintain the
   packet order when the audio data is transported over unreliable transports
   such as UDP.
+
+序列号
+  音频数据序列号。该序列号用来在UDP不可靠的传输中维持数据包的秩序的。
 
   The sequence number might increase by more than one between subsequent audio
   packets in case the audio packets contain multiple audio segments. This
