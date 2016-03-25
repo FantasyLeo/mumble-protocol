@@ -1,7 +1,7 @@
 .. _voice-data:
 
-Voice data
-==========
+Voice data 语音数据
+==================
 
 Mumble audio channel is used to transmit the actual audio packets over the
 network. Unlike the TCP control channel, the audio channel uses a custom
@@ -9,10 +9,15 @@ encoding for the audio packets. The audio channel is transport independent and
 features such as encryption are implemented by the transport layer. Integers
 above 8-bits are encoded using the `Variable length integer encoding`_.
 
+Mumble音频通道是用来在网络中传输真实的音频数据包的。不同于TCP控制通道，音频
+通道的数据包使用了自定义编码的方式。音频通道是对立与传输层的，且加密等功能是由
+传输层实现的（此处翻译不准确）。超过8位的整形是使用可变长度整型编码
+（`Variable length integer encoding`_）。
+
 .. _packet-format:
 
-Packet format
--------------
+Packet format 数据包格式
+------------------------
 
 The mumble audio channel packets are variable length packets that begin with an
 8-bit header field which describes the packet type and target. The most
@@ -21,6 +26,11 @@ target. The header is followed by the packet payload. The maximum size for the
 whole audio data packet is 1020 bytes. This allows applications to use 1024
 byte buffers for receiving UDP datagrams with the 4-byte encryption header
 overhead.
+
+Mumble音频通信包是可变长度的，在它的开头有8位头字段用来描述数据包的类型和目标。
+最开始的3位定义了数据包类型，剩下的5位定义了目标。紧跟着头数据的是净负荷（实际的
+与语音数据）。对于整个音频数据包最大是1020字节。这允许应用程序使用1024个字节缓冲区
+来带有4字节加密头的接收UDP数据。(最后一句，翻译有待考究）
 
 .. _Audio packet structure:
 .. table:: Audio packet structure
@@ -41,6 +51,10 @@ type
   either ping packets used to diagnose the transport layer connectivity or
   audio packets encoded with different codecs. Different types are listed in
   `Audio packet types`_ table.
+
+类型
+   音频数据包类型。音频通道传输的数据包要么是用于诊断传输层连接的ping包，要么
+   就是各种不同编码的音频包。不同的类型如下表所列举：
 
 .. _Audio packet types:
 .. table:: Audio packet types
