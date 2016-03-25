@@ -82,11 +82,21 @@ target
   separately in the control channel using the ``VoiceTarget`` packets. The
   targets are listed in `Audio targets`_ table.
 
+目标
+  目标部分定义了音频包的接收这。两个常量目标是 *Normal talking* (``0``) 和
+  *Server Loopback* (``31``)。区间1-30 为私语目标保留字段。这些目标指定单独
+  的控制通道使用``VoiceTarget``包。如下表。
+
   When a client registers a VoiceTarget on the server, it gives the target an
   ID. This voice target ID can be used as a target in the voice packets to send
   audio to specific users or channels. When receiving whisper-audio the server
   uses target 1 to specify the audio results from a whisper to a channel and
   target 2 to specify that the audio results from a direct whisper to the user.
+
+  当客户端在服务器上注册一个VocieTarget时候，它将分配给目标一个ID。这个语音目标ID
+  能够被作为语音数据包的一个目标。使得发送的音频转发给一个特定的用户群或者是频道。
+  当接收到一个私语音频包时，服务器使用目标1来指定这个音频来自一个频道的结果，使用
+  目标 2 来指定一个直接来自私语者用户的结果。（不会翻译，看不懂啊）
 
 .. _Audio targets:
 .. table:: Audio targets
@@ -105,13 +115,16 @@ target
    | ``31``    | Server loopback                                     |
    +-----------+-----------------------------------------------------+
 
-Ping packet
-~~~~~~~~~~~
+Ping packet Ping包
+~~~~~~~~~~~~~~~~~~
 
 Audio channel ping packets are used as part of the connectivity checks on the
 audio transport layer. These packets contain only varint encoded timestamp as
 data.  See `UDP connectivity checks`_ section below for the logic involved in
 the connectivity checks.
+
+音频通道ping包用作检查音频传输层的连接。这个包仅仅包含了varint类型编码的时间戳
+作为数据。 参见下章 `UDP连接检查`
 
 .. _Audio transport ping packet:
 
@@ -129,13 +142,20 @@ Header
   Common audio packet header. For ping packets this should have the value of
   0x20.
 
+头部
+  公共的音频包头部。对于Ping包这里的值应该是0x20。
+
 Data
   Timestamp. The packet should be echoed back so the timestamp format can be
   decided by the original sender - the only limitation is that it must fit in a
   64-bit integer for the varint encoding.
+  
+数据
+  时间戳。这个数据包将会被回显给最初的发送者，所以时间戳格式可以由发送者决定。
+  唯一的限制是：它必须是64位的可变整形编码。
 
-Encoded audio data packet
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Encoded audio data packet 编码音频数据包
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Encoded audio packets contain the actual user audio data for the voice
 communication. Incoming audio data packets contain the common header byte
