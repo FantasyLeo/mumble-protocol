@@ -304,10 +304,12 @@ Data
 数据
   单一编码的音频帧。编码格式决定于整个音频包中的头部中的``type``类型码。
   
-Opus audio frames
-"""""""""""""""""
+Opus audio frames  Opus音频帧
+"""""""""""""""""""""""""""""""
 
 Encoded Opus audio is transported as a single Opus audio frame. The frame is prefixed with a variable byte header.
+
+编码的Opus音频数据是使用单一的Opus音频帧传输的。该帧是一个带有可变字节的头部前缀。
 
 .. _opus-encoded-audio-data:
 
@@ -326,10 +328,16 @@ Header
   and terminator bit value. The varint encoding is the same as with 64-bit
   values, but only 16-bit unencoded values are allowed.
 
+头部
+  数据字段的长度。16位可变长度的整型包含了长度信息和结束符指（terminator bit value）。
+  这个可变整型的编码与64位值的相同，但是仅允许容纳16位的未编码的值。
+
   The maximum voice frame size is 8191 (``0x1FFF``) bytes requiring the 13 least
   significant bits of the header. The 14th bit (mask: ``0x2000``) is the terminator
   bit which signals whether the packet is the last one in the voice
   transmission.
+  
+  
 
   Note: In CELT the "continuation bit" in the header defines whether there are
   more audio frames in the current packet. Opus always contains only one frame
