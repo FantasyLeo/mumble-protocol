@@ -235,11 +235,18 @@ Sequence Number
   packets in case the audio packets contain multiple audio segments. This
   allows the packet loss concealment algorithms to figure out how many audio
   frames were lost between two received packets.
+  
+  序列号可能在多个后续音频包中增加，为了防止音频包包含重复的音频分段。这使得能够
+  使用数据包丢失隐藏算法（PLC）计算出在接收到的两个包之间丢失了多少音频帧。
 
 Payload
   Audio payload. Format depends on the audio codec defined in the Header. The
   payload must be self-delimiting to determine whether the position info exists
-  at the end of the packet.
+  at the end of the packet. 
+
+净负荷
+  音频净负荷。其格式决定于头部定义的音频编码。净负荷必须被定界限，以此来判定包
+  尾部是否有音频位置信息。
 
 Position Info
   The XYZ coordinates of the audio source. In addition to sending the position
@@ -247,15 +254,23 @@ Position Info
   ``UserState`` message. The plugins might define different contexts which
   prevent voice communication between users in other contexts.
 
-Speex and CELT audio frames
-"""""""""""""""""""""""""""
+位置信息
+  音频源的XYZ三维坐标系坐标。除了发送位置信息以外，用户必须使用``UserState``消息中
+  定义的音频位置插件。插件可以定义不同的防止声音在其他环境中用户之间的通信的上下文中。
+  （崩溃了，最后一句有问题）
+
+Speex and CELT audio frames （Speex 和 CELT 音频帧）
+""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Encoded Speex and CELT audio is transported as individual encoded frames. Each
 frame is prefixed with a single byte length and terminator header.
 
+编码的Speex 和 CELT 的音频 是被作为独立的编码帧传输的。每一帧是有一个单字节长度前缀
+和终结符的头部。
+
 .. _celt-encoded-audio-data:
 
-.. table:: CELT encoded audio data
+.. table:: CELT encoded audio data CELT （编码的音频数据）
 
    +---------+-------------+-----------------------------------------+
    | Field   | Type        | Description                             |
@@ -270,14 +285,25 @@ Header
   continuation bit and is set for all but the last frame in the payload. The
   remaining 7 bits of the header contain the actual length of the Data frame.
 
+头部
+    
+ 数据字段的长度。最高有效位（``0x80``）充当扩展位，且在净负荷中的所有的帧都是被设置除了
+ 最后一帧。头部剩下的7位包含了数据帧的实际长度。
+
   Note the length may be zero, which is used to signal the end of a voice
   transmission. In this case the audio data is a single zero-byte which can be
   interpreted normally as length of 0 with no continuation bit set.
+  
+  注意帧的长度可能是零，用来表示语音传输结束。这种情况下，音频数据是一个可以被正常解读的
+  单零字节。
 
 Data
   Single encoded audio frame. The encoding depends on the codec ``type`` header
   of the whole audio packet
-
+  
+数据
+  单一编码的音频帧。编码格式决定于整个音频包中的头部中的``type``类型码。
+  
 Opus audio frames
 """""""""""""""""
 
