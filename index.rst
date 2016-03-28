@@ -1,12 +1,8 @@
-Mumble Protocol Documentation
-=============================
-Mumble 协文档
-=============================
+Mumble Protocol Documentation  Mumble 协议文档（中文版）
+=======================================================
 
-Contents
---------
-目录
---------
+Contents 目录
+-------------
 
 .. toctree::
    :maxdepth: 3
