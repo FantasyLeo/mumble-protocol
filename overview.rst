@@ -25,7 +25,7 @@ Both are protected by strong cryptography, this encryption is mandatory and cann
    :alt: Mumble crypt types
    :align: center
 
-   Mumble crypto types
+   Mumble crypto types   Mumble加密类型
 
 While the TCP connection is mandatory the UDP connection can be compensated by tunnelling the UDP packets through the TCP connection as described in the protocol description later.
 
