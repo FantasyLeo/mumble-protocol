@@ -8,7 +8,7 @@ encrypted connection. This makes the protocol very easily expandable.
 
 Mumble 的协议栈是浅显易懂的。基本上，它使用了谷歌的数据序列化反序列化
 工具（Google'Protocol Buffers, protobuf）[#f1]_，使用简单的前缀区分
-不同种类的、通过TLSv1加密连接发送来的数据包。这使得协议非常容易的扩充。
+不同种类的、通过TLSv1加密连接发送来的数据包。这使得协议非常容易地被扩展。
 
 .. _mumble-packet:
 
@@ -92,7 +92,7 @@ For raw representation of each packet type see the attached Mumble.proto [#f2]_ 
 每一行代码了一种包的类型，详情见Mumble.proto[#f2]_文件。
 
 
-..      rubric:: Footnotes 脚注
+..      rubric:: Footnotes
 
 .. [#f1] https://github.com/google/protobuf
 .. [#f2] https://raw.github.com/mumble-voip/mumble/master/src/Mumble.proto
