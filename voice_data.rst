@@ -54,7 +54,7 @@ type
 
 类型
    音频数据包类型。音频通道传输的数据包要么是用于诊断传输层连接的ping包，要么
-   就是各种不同编码的音频包。不同的类型如下表所列举：
+   就是各种不同编解码器的音频包。不同的类型如下表所列举：
 
 .. _Audio packet types:
 .. table:: Audio packet types
@@ -337,19 +337,27 @@ Header
   bit which signals whether the packet is the last one in the voice
   transmission.
   
-  
+  最大的语音帧大小是8181（``0x1FFF``）字节，需要占用头部的13位。第14位（掩码：``0x2000``）
+  是结束符标志位，表示该数据包是不是最后一个语音包。
 
   Note: In CELT the "continuation bit" in the header defines whether there are
   more audio frames in the current packet. Opus always contains only one frame
   in the packet. In CELT the voice transmission end is signaled with a
   zero-byte CELT packet while in Opus we have a dedicated termination bit in
   the header.
+  
+  注意：在CELT的头部的“延续位”（continuation bit)定义了在当前的数据包中是否更多的
+  音频帧。Opus编码的数据包总是只包含一个帧。CELT语音传输结束使用一个零字节（zero-byte）的CELT
+  数据包来表示是否结束，然而在Oput编码中，我们使用了在头部中的一个专门的传输位来表示。
 
 Data
   The encoded Opus data.
+  
+数据
+  编码的Opus数据。
 
-Codecs
-------
+Codecs 编码解码器
+-----------------
 
 Mumble supports three distinct codecs; Older Mumble versions use Speex for low
 bitrate audio and CELT for higher quality audio while new Mumble versions
@@ -357,9 +365,17 @@ prefer Opus for all audio. When multiple clients with different capabilities
 communicate together the server is responsible for resolving the codec to use.
 The clients should respect the server resolution if they are capable.
 
+Mumble支持三种明显不同的编解码器。旧版本的Mumble使用Speex采集低比特率音频，使用CELT
+采集高质量的音频。然而新版本的Mumble客户端更倾向于使用Opus采集所有的音频。
+当多个客户使用不同的功能一起通信，服务器负责解决编解码器使用。客户端应该遵守服务端的
+决议，如果客户端兼容。
+
 If the server resolves a codec a client doesn't support, that client is free to
 use any codec it prefers. Usually this means the client will not be able to
 decode incoming audio, but it can still send encoded audio out.
+
+如果服务器决定的编解码器客户端不支持，那么该客户端可以自由选择任何自己更适合的编解码器。
+通常这一位置客户端将不能够解码接收的音频，但是它仍可以发送编码好的音频。
 
 The CELT bitstream was never frozen which makes most CELT versions incompatible
 with each other. The two CELT bitstreams supported by Mumble are: CELT 0.7.0
@@ -369,8 +385,14 @@ to force Opus codec for the users. Mumble has had Opus support since 1.2.4
 (June 2013) so it should be safe to assume most clients in use support this
 now.
 
-Whispering
-----------
+CELT比特流从来不会被冻结，因为大多数CELT版本互相是不兼容的。两种CELT比特流被Mumble支持：
+CELT0.7.0（CELT Alpha） 和 CLET 0.11.0 （CELT beta）。而在技术上 CELT 0.7.0应该被大多数
+Mumble客户端支持，对所有用户有些服务器可能会被配置为强制使用Opus编解码器。Mumble已经从
+版本1.2.4（2013年6月）开始支持Opus，所以现在大多数客户端使用Opus编解码器是比较安全的
+（大多数客户端目前支持Opus编解码器）。
+
+Whispering  私语
+-----------------
 
 Normal talking can be heard by the users of the current channel and all linked
 channels as long as the speaker has Talk permission on these channels. If the
