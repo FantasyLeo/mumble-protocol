@@ -452,15 +452,20 @@ packet described in `Packet format`_ should be written to the TCP socket
 verbatim.
 
 如果UDP通道处于不可以用状态，语音数据包可以通过用来传输控制信息的TCP通道。这些消息
-使用正常的TCP前缀，见表格:ref:`mumble-packet`:
+使用正常的TCP前缀，见表格 :ref:`mumble-packet`: 16位的消息类型紧跟着32位的消息长度。
+然而不像其他TCP消息一样，音频数据包没有使用protobuf（google protocol buffer）编码，
+而是像 `Packet format`_ 描述的那样被原封不动的写入TCP socket。
 
 When the packets are received it is safe to parse the type and length fields
 normally.  If the type matches that of the audio tunnel the rest of the message
 should be processed as an UDP packet without attempting a protocol buffer
 decoding.
 
-Implementation note
-~~~~~~~~~~~~~~~~~~~
+当这样的数据包被接收时，正常的将被安全的解析类型和长度字段。如果类型被匹配为音频
+通道的消息，这些消息将被视为UDP数据包，而不会去尝试使用protobuf解析。
+
+Implementation note  实现注意事项
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When implementing the protocol it is easier to ignore the UDP transfer layer at
 first and just tunnel the UDP data through the TCP tunnel. The TCP layer must
@@ -468,8 +473,12 @@ be implemented for authentication in any case. Making sure that the voice
 transmission works before implementing the UDP protocol simplifies debugging
 greatly.
 
-Encryption
-----------
+当实现该协议时，在一开始可以很容易的忽略UDP传输层，仅使用TCP通道传输UDP数据即可。
+在任何情况下，TCP层必须被实现权限验证。在实现UDP协议之前，确保语音传输起作用，
+这大大简化了调试。
+
+Encryption 加密
+----------------
 
 All the packets are encrypted once during transfer. The actual encryption
 depends on the used transport layer. If the packets are tunneled through TCP
@@ -477,8 +486,12 @@ they are encrypted using the TLS that encrypts the whole control channel
 connection and if they are sent directly using UDP they must be encrypted using
 the OCB-AES128 encryption.
 
-Variable length integer encoding
---------------------------------
+所有的数据包在传输过程中都是被加密的。实际的加密方式取决于所使用的传输层。如果
+数据包是通过TCP通道，那么他们是使用TLS加密的。如果直接使用UDP通道，他们必须使用
+OCB-AES128加密数据。
+
+Variable length integer encoding  可变长整型编码
+-------------------------------------------------
 
 The variable length integer encoding (``varint``) is used to encode long,
 64-bit, integers so that short values do not need the full 8 bytes to be
@@ -493,11 +506,14 @@ searching the first decoded description that fits the number that should be
 decoded, truncating it to the required bytes and combining it with the defined
 encoding prefix.
 
+可变长整型编码（简称 ``varint``）是用来编码long型、64位整型等等，short型也不需要用整个
+8字节（8位，文档可能有误）传输了。
+
 See the *quint64* shift operators in
 https://github.com/mumble-voip/mumble/blob/master/src/PacketDataStream.h
 for a reference implementation.
 
-.. table:: Varint prefixes
+.. table:: Varint prefixes （可变长整型前缀）
 
    +----------------------------------+--------------------------------------------------------+
    | Encoded                          | Decoded                                                |
