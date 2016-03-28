@@ -401,12 +401,20 @@ use whispering. This is achieved by registering a voice target using the
 VoiceTarget message and specifying the target ID as the target in the first
 byte of the UDP packet.
 
-UDP connectivity checks
------------------------
+正常的说话能够被当前房间下的和有讲话权限的连接房间下的所有人听到。如果发言者希望
+广播语音给特定的用户或者频道（房间），可以使用私语功能（whispering）。这是通过
+使用VocieTarget消息注册一个语音目标并且在UPD数据包的第一个字节中指定目标ID（target ID）
+实现的。
+
+UDP connectivity checks  UDP连接检查
+------------------------------------
 
 Since UDP is a connectionless protocol, it is heavily affected by network
 topology such as NAT configuration. It should not be used for audio
 transmission before the connectivity has been determined.
+
+由于UDP是一种无连接的协议,它严重影响网络拓扑NAT等配置。在连接还没有被建立之前，
+它不应该被用来传输音频数据。
 
 The client starts the connectivity checks by sending a `Ping packet`_ to the
 server. When the server receives this packet it will respond by echoing it back
@@ -414,6 +422,10 @@ to the address it received it from. Once the client receives the response from
 the server it can start using the UDP transport for audio data. When the server
 receives incoming audio data over the UDP transport it can switch the outgoing
 audio over to UDP transport as well.
+
+客户端通过发送向服务器一个Ping包（`Ping packet`）来进行链路检查。当服务器收到这个包时，
+它将把该包原路返回。一旦客户端收到来自服务器的回应，它就可以使用UPD来传输音频数据了。
+当服务器接收到了通过UPD传输通道进入的音频数据，它也能够把输出的音频切换为通过UDP通道发送。
 
 If the client stops receiving replies to the UDP pings at some point, it should
 start tunneling the voice communication through the TCP tunnel as described in
@@ -423,8 +435,13 @@ communication. The client should still continue sending audio ping packets over
 the UDP transport in case the UDP connection is restored and the communication
 can be switched back to it.
 
-Tunneling audio over TCP
-------------------------
+如果客户端在某个时刻停止了接收回复UDP Ping包，它将切换为如下面的`Tunneling audio over TCP`
+所描述的那样的TCP语音传输隧道。当服务器接收到一个通过TCP连接隧道发送的数据包，它也必须
+为此通信停止使用UDP。客户端应该仍然继续通过UDP传输通道发送音频Ping包，以便得知UDP连接的恢复，
+再切换回去（切换为UDP）。
+
+Tunneling audio over TCP   TCP音频数据隧道
+------------------------------------------
 
 If the UDP channel isn't available the voice packets can be transmitted through
 the TCP transport used for the control channel. These messages use the normal
@@ -433,6 +450,9 @@ followed by 32-bit message length. However unlike other TCP messages, the audio
 packets are not encoded as protocol buffer messages but instead the raw audio
 packet described in `Packet format`_ should be written to the TCP socket
 verbatim.
+
+如果UDP通道处于不可以用状态，语音数据包可以通过用来传输控制信息的TCP通道。这些消息
+使用正常的TCP前缀，见表格:ref:`mumble-packet`:
 
 When the packets are received it is safe to parse the type and length fields
 normally.  If the type matches that of the audio tunnel the rest of the message
